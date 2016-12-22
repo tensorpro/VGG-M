@@ -1,11 +1,12 @@
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, BatchNormalization, Activation, ZeroPadding2D, MaxPooling2D, Flatten, Dropout
-
+from keras.callbacks import TensorBoard
+from keras.preprocessing.image import ImageDataGenerator
 def VGG_M():
     model = Sequential(
         [Conv2D(96,7,7,
                 subsample=(2,2),
-                activation='relu', input_shape=[224,224,3]),
+                activation='relu', input_shape=[256,256,3]),
          BatchNormalization(),
 
          MaxPooling2D((2,2)),
@@ -37,3 +38,16 @@ def VGG_M():
         ]
     )
     return model
+
+from os.path import expanduser, join
+
+def get_generators(datapath = expanduser('~/Datasets/ImageNet/raw-data/')):
+    traindir = join(datapath, 'train')
+    trainpp = ImageDataGenerator(horizantal_flip=True, rotation_range=30)
+    traingen = trainpp.flow_from_directory(traindir)
+    
+    validdir = join(datapath, 'validation')    
+    validpp = ImageDataGenerator(horizantal_flip=True)
+    validgen = validpp.flow_from_directory(validdir)
+
+    return traingen, validgen
