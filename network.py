@@ -2,6 +2,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Conv2D, BatchNormalization, Activation, ZeroPadding2D, MaxPooling2D, Flatten, Dropout
 from keras.callbacks import TensorBoard
 from keras.preprocessing.image import ImageDataGenerator
+tf.python.control_flow_ops = tf # hack for compatability with tf .11
+
 def VGG_M():
     model = Sequential(
         [Conv2D(96,7,7,
