@@ -1,6 +1,6 @@
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, BatchNormalization, Activation, ZeroPadding2D, MaxPooling2D, Flatten, Dropout
-from keras.callbacks import TensorBoard
+from keras.callbacks import TensorBoard, ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
 import tensorflow as tf
 tf.python.control_flow_ops = tf # hack for compatability with tf .11
@@ -47,10 +47,21 @@ from os.path import expanduser, join
 def get_generators(datapath = expanduser('~/Datasets/ImageNet/raw-data/')):
     traindir = join(datapath, 'train')
     trainpp = ImageDataGenerator(horizontal_flip=True, rotation_range=30)
-    traingen = trainpp.flow_from_directory(traindir)
+    traingen = trainpp.flow_from_directory(traindir, batch_size=batch_size)
     
     validdir = join(datapath, 'validation')    
     validpp = ImageDataGenerator(horizontal_flip=True)
-    validgen = validpp.flow_from_directory(validdir)
+    validgen = validpp.flow_from_directory(validdir, batch_size=batch_size)
 
     return traingen, validgen
+
+def train():
+    mc = ModelCheckpoint(filepath="models", verbose=1, save_best_only=True)
+    tb = TensorBoard("logs")
+    train_gen, valid_gen = get_generators()
+    train_size = 1281167
+    valid_size = 50000
+
+    m.compile(optimizer='adam', loss='categorical_crossentropy')
+    m.fit()
+    
