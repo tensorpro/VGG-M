@@ -64,7 +64,7 @@ def train():
     m = VGG_M()
     m.compile(optimizer='adam', loss='categorical_crossentropy')
     m.fit_generator(train_gen, train_size, 1000, callbacks = [mc,tb],
-                    validation_data=valid_gen, nb_val_samples=val_size/5, nb_worker=8, pickle_safe=True)
+                    validation_data=valid_gen, nb_val_samples=valid_size/5, nb_worker=8, pickle_safe=True)
     
 if __name__ == '__main__':
     train()
