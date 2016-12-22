@@ -61,7 +61,7 @@ def train():
     train_gen, valid_gen = get_generators()
     train_size = 1281167
     valid_size = 50000
-
+    m = VGG_M()
     m.compile(optimizer='adam', loss='categorical_crossentropy')
     m.fit_generator(train_gen, train_size, 1000, callbacks = [mc,tb],
                     validation_data=valid_gen, nb_val_samples=val_size/5, nb_worker=8, pickle_safe=True)
