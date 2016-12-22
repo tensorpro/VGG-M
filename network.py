@@ -44,7 +44,7 @@ def VGG_M():
 
 from os.path import expanduser, join
 
-def get_generators(datapath = expanduser('~/Datasets/ImageNet/raw-data/')):
+def get_generators(datapath = expanduser('~/Datasets/ImageNet/raw-data/'), batch_size=16):
     traindir = join(datapath, 'train')
     trainpp = ImageDataGenerator(horizontal_flip=True, rotation_range=30)
     traingen = trainpp.flow_from_directory(traindir, batch_size=batch_size)
