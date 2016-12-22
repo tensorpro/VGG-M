@@ -43,7 +43,7 @@ from os.path import expanduser, join
 
 def get_generators(datapath = expanduser('~/Datasets/ImageNet/raw-data/')):
     traindir = join(datapath, 'train')
-    trainpp = ImageDataGenerator(horizantal_flip=True, rotation_range=30)
+    trainpp = ImageDataGenerator(horizontal_flip=True, rotation_range=30)
     traingen = trainpp.flow_from_directory(traindir)
     
     validdir = join(datapath, 'validation')    
