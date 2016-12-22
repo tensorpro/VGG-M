@@ -47,7 +47,7 @@ def get_generators(datapath = expanduser('~/Datasets/ImageNet/raw-data/')):
     traingen = trainpp.flow_from_directory(traindir)
     
     validdir = join(datapath, 'validation')    
-    validpp = ImageDataGenerator(horizantal_flip=True)
+    validpp = ImageDataGenerator(horizontal_flip=True)
     validgen = validpp.flow_from_directory(validdir)
 
     return traingen, validgen
