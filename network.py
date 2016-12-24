@@ -22,7 +22,7 @@ def lrn(input, radius=2, alpha=.001, beta=.75, name='LRN', bias=1.0):
                                                   name=name)
 
 
-def VGGNW(train=False):
+def VGG_M(train=False):
     model = Sequential(
         [Conv2D(96,7,7, subsample=(2,2),input_shape=imn, trainable=train),
          Activation('relu'),
@@ -53,14 +53,14 @@ def VGGNW(train=False):
     return model
 
 
-def get_generators(datapath = expanduser('~/Datasets/ImageNet/raw-data/'), batch_size=16):
+def get_generators(datapath = expanduser('~/Datasets/ImageNet/raw-data/'), batch_size=25):
     traindir = join(datapath, 'train')
     trainpp = ImageDataGenerator(horizontal_flip=True, rotation_range=30)
-    traingen = trainpp.flow_from_directory(traindir, batch_size=batch_size)
+    traingen = trainpp.flow_from_directory(traindir, batch_size=batch_size, target_size=(224,224))
     
     validdir = join(datapath, 'validation')    
     validpp = ImageDataGenerator(horizontal_flip=True)
-    validgen = validpp.flow_from_directory(validdir, batch_size=batch_size)
+    validgen = validpp.flow_from_directory(validdir, batch_size=batch_size, target_size=(224,224))
 
     return traingen, validgen
 
@@ -72,10 +72,9 @@ def train():
     train_size = 1281167
     valid_size = 50000
     m = VGG_M()
-    m.compile(optimizer='adam', loss='categorical_crossentropy', metrics = ['top_k_categorical_accuracy',
-                                                                            'categorical_accuracy'])
-    m.fit_generator(train_gen, train_size/2000, 1000, callbacks = [mc,tb, pb],
-                    validation_data=valid_gen, nb_val_samples=valid_size/5, nb_worker=16, pickle_safe=True)
+    m.compile(optimizer='adam', loss='categorical_crossentropy', metrics = ['accuracy'])
+    m.fit_generator(train_gen, 1000, 1000, callbacks = [tb, pb],
+                    validation_data=valid_gen, nb_val_samples=500, nb_worker=16, pickle_safe=True)
     
 if __name__ == '__main__':
     train()
