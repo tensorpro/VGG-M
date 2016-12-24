@@ -4,12 +4,13 @@ from keras.layers import Lambda
 from keras.callbacks import TensorBoard, ModelCheckpoint, ProgbarLogger
 from keras.preprocessing.image import ImageDataGenerator
 import tensorflow as tf
+from os.path import expanduser, join
 
 tf.python.control_flow_ops = tf # hack for compatability with tf .11
 
 md = [107,107,3]
 imn = [224,224,3]
-imn = [256,256,3]
+
 
 # .lrn(2, 0.0001, 0.75, name='norm1')
 def lrn(input, radius=2, alpha=.001, beta=.75, name='LRN', bias=1.0):
@@ -21,47 +22,34 @@ def lrn(input, radius=2, alpha=.001, beta=.75, name='LRN', bias=1.0):
                                                   name=name)
 
 
-def convW(W, num):
-    Wb = W['conv{}'.format(num)]
-    
-    
-
-def VGGNW():
+def VGGNW(train=False):
     model = Sequential(
-        [Conv2D(96,7,7, subsample=(2,2),input_shape=imn),
+        [Conv2D(96,7,7, subsample=(2,2),input_shape=imn, trainable=train),
          Activation('relu'),
          #LRN
          Lambda(lrn),
          MaxPooling2D((3,3),(2,2)),
 
-         Conv2D(256,5,5, subsample=(2,2)),
+         Conv2D(256,5,5, subsample=(2,2), trainable=train),
          Activation('relu'),
          #LRN
          Lambda(lrn),
          MaxPooling2D((2,2)),
          
-         Conv2D(512,3,3,activation='relu'),
+         Conv2D(512,3,3,activation='relu', trainable=train),
          ZeroPadding2D((1,1)),
-         Conv2D(512,3,3,activation='relu'),
+         Conv2D(512,3,3,activation='relu', trainable=train),
          ZeroPadding2D((1,1)),
-         Conv2D(512,3,3,activation='relu'),
+         Conv2D(512,3,3,activation='relu', trainable=train),
          MaxPooling2D((2,2)),
 
-         BatchNormalization(),
-        
-
          Flatten(),
-         Dense(4096, activation='relu'),
-         BatchNormalization(),
-         Dropout(.5),
-         Dense(4096, activation='relu'),
-         Dropout(.5),
-         BatchNormalization(),
-
-         Dense(1000, activation='softmax'),
+         Dense(4096, activation='relu', trainable=train),
+         Dense(4096, activation='relu', trainable=train),
         ]
     )
-    model.load_weights('VGGM.h5')
+    model.load_weights('VGGM.h5', by_name=True)
+    model.add(Dense(1000, activation='softmax'))
     return model
 
 
